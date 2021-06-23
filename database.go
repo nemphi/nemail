@@ -36,7 +36,8 @@ func NewDBConnection(cfg *DBConfig) (_ *DB, err error) {
 		if err != nil {
 			return nil, err
 		}
-		connectionContext, _ := context.WithTimeout(context.Background(), timeoutDuration)
+		connectionContext, cancelTimeout := context.WithTimeout(context.Background(), timeoutDuration)
+		defer cancelTimeout()
 		client, err = grpc.DialContext(connectionContext, cfg.Host)
 		if err != nil {
 			return nil, err
